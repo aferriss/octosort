@@ -7,7 +7,7 @@
 //--------------------------------------------------------------
 void ofApp::setup(){
     
-    img.load("snowdenClose2.jpg");
+    img.load("bars2.jpg");
     
     ofSetFrameRate(30);
     //ofSetVerticalSync(true);
@@ -30,7 +30,8 @@ void ofApp::setup(){
     verbose = true;
     savePic = false;
     
-    unsigned char * pixels = img.getPixels();
+//    unsigned char * pixels = img.getPixels();
+    ofPixels pixels = img.getPixels();
     
     newPix.allocate(w, h, OF_IMAGE_COLOR);
     
@@ -157,7 +158,8 @@ void ofApp::setup(){
     }
 
 
-    newPix.setFromPixels(img.getPixels(), w, h, 3);
+//    newPix.setFromPixels(img.getPixels());
+    newPix = img.getPixels();
     
     boxW = 300;
     boxH = 900;
@@ -235,7 +237,7 @@ void ofApp::draw(){
     
     
     
-    int threshold = 80;
+    int threshold = 256;
 
 //    if(start){
 //        for(int y = 0; y<h; y+=2){
@@ -276,9 +278,10 @@ if(start){
             int newLoc = (y*w+x)*3;
             
             
-            if(octPixelArray[loc+1].avgCol > octPixelArray[loc].avgCol && x > 0  && x < w){
+            if(octPixelArray[loc+1].avgCol > octPixelArray[loc].avgCol && x > 0  && x < w && ofGetMousePressed() &&
+               x > ofGetMouseX() && x < ofGetMouseX()+50  && y > ofGetMouseY() && y < ofGetMouseY()+50 ){
                  //if( octPixelArray[loc].avgCol > ofMap(mouseX, 0, w, 0, 255) && octPixelArray[loc].avgCol <threshold && octPixelArray[loc-1].avgCol <threshold && octPixelArray[loc+1].avgCol <threshold){
-                if( octPixelArray[loc].avgCol > ofMap(mouseX, 0, w, 0, 255) && octPixelArray[loc].avgCol < threshold){
+                if( octPixelArray[loc].avgCol < 250 && octPixelArray[loc].avgCol < threshold){
                 swapOctPixel(octPixelArray, loc-1, loc);
             //a row
                 newPix[newLoc + 0] = octPixelArray[loc].a1.pixelColor.x;
@@ -694,7 +697,8 @@ void ofApp::keyPressed(int key){
     
     if(key == 'r'){
         start = false;
-            newPix.setFromPixels(img.getPixels(), w, h, 3);
+        newPix = img.getPixels();
+            //newPix.setFromPixels(img.getPixels(), w, h, 3);
         start = true;
     }
     
